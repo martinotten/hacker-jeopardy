@@ -163,16 +163,10 @@ var AppRouter = Backbone.Router.extend({
 $(document).ready(function() {
   new AppRouter();
   var playersElement = $("div#players");
-  var socket = new WebSocket("ws://localhost:9090/ws");
+  var socket = new WebSocket("ws://localhost:9090/ws/");
+  socket.onmessage = function (event) {
+    console.log(event);
+  }
 
-  $.ajax({
-    url: "players.json",
-    cache: false
-  }).done(function(players) {
-    var playerModels = _.map(players, function(player) {
-      return new Player(player);
-    });
-    new PlayersView({collection: new Players(playerModels), root: playersElement});
-  });
   Backbone.history.start();
 });
