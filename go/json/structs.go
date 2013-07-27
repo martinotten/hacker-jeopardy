@@ -17,10 +17,17 @@ type Answer struct {
 	Done bool`json:"done"`
 }
 
+
 type Player struct {
 	Name string `json:"name"`
-	Number int `json:"number"`
 	Score int `json:"score"`
+	Status string `json:"status"`
+}
+
+type GameState struct {
+	Categories []Category `json:"categories"`
+	Players    []Player   `json:"players"`
+	Answer     string     `json:"answer"`
 }
 
 // messages

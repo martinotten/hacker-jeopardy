@@ -19,60 +19,20 @@ func (ws * WebsocketHandler)SetSocket (con *websocket.Conn) {
 	ws.encoder = J.NewEncoder(con)
 }
 
-func (ws * WebsocketHandler) UISendGame(cats []*json.Category) error {
-	if ws.encoder == nil {
-		return fmt.Errorf("no websocket")
+func (ws * WebsocketHandler) SendGameState(state *json.GameState) {
+	if err := ws.encoder.Encode(state); err != nil {
+		fmt.Printf("%s", err)
+		panic(err.Error())
 	}
-	if err := ws.encoder.Encode(cats); err != nil {
-		return err
-	}
-	return nil
 }
 
-func (ws * WebsocketHandler) UISendPlayer(p json.Player) error{
-	if ws.encoder == nil {
-		return fmt.Errorf("no websocket")
+
+
+// 
+func (ws * WebsocketHandler) UISendGame(state []*json.Category) {
+	if err := ws.encoder.Encode(state); err != nil {
+		fmt.Printf("%s", err)
+		panic(err.Error())
 	}
-	if err := ws.encoder.Encode(p); err != nil {
-		return err
-	}
-	return nil
 }
 
-func (ws * WebsocketHandler) UISendCurrentPick(p json.Player) error {
-	if ws.encoder == nil {
-		return fmt.Errorf("no websocket")
-	}
-	if err := ws.encoder.Encode(p.Number); err != nil {
-		return err
-	}
-	return nil
-}
-func (ws * WebsocketHandler) UISendCurrentPlayAnswer(a json.Answer) error {
-	if ws.encoder == nil {
-		return fmt.Errorf("no websocket")
-	}
-	if err := ws.encoder.Encode(a); err!= nil {
-		return err;
-	}
-	return nil
-}
-
-func (ws * WebsocketHandler) UISendCorrect() error {
-	if ws.encoder == nil {
-		return fmt.Errorf("no websocket")
-	}
-	if err := ws.encoder.Encode("correct"); err != nil {
-		return err
-	}
-	return nil
-}
-func (ws * WebsocketHandler) UISendIncorrect() error {
-	if ws.encoder == nil {
-		return fmt.Errorf("no websocket")
-	}
-	if err := ws.encoder.Encode("wrong"); err != nil {
-		return err
-	}
-	return nil
-}

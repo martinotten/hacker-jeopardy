@@ -1,5 +1,12 @@
 package statemachine
 
+import (
+	"jeopardy/json"
+)
+
+import (
+	"fmt"
+)
 type StateId int
 
 const (
@@ -50,10 +57,10 @@ type State interface {
 	HandleEvent(Event) State
 
 }
-type Player struct {
-	Name string
-	Score int
-}
+//type Player struct {
+//	Name string
+//	Score int
+//}
 
 type Question struct {
 	Answer string
@@ -63,17 +70,31 @@ type Question struct {
 
 type Game struct {
 	GameState State
-	Player1 *Player
-	Player2 *Player
-	Player3 *Player
-	CurrentPlayer *Player
+	Players []*json.Player
+	CurrentPlayer *json.Player
 	CurrentQuestion * Question
 	CurrentAttempts string  // keeps track of who has tried to answer the current Question
 	QuestionsRemaining int
+	Categories []*json.Category
 	// Buzzer 1
 	// Buzzer 2
 	// Buzzer 3
 	// UI
+}
+
+func NewGame(fn string)*Game {
+	var err error
+	game := new(Game)
+	if game.Categories, err = json.LoadCategories(fn); err != nil {
+		fmt.Printf("%s\n", err)
+		panic(err.Error())
+	}
+	game.Players = make([]*json.Player, 3)
+	game.Players[0] = &json.Player{"1", 0, "default"}
+	game.Players[1] = &json.Player{"2", 0, "default"}
+	game.Players[2] = &json.Player{"3", 0, "default"}
+
+	return game
 }
 
 func (g * Game) HandleEvent (e Event) {
@@ -130,11 +151,11 @@ func (s * S_Player) Id()StateId {return PLAYER}
 func (s * S_Player) EnterState(e Event) {
 	switch (e.Id) {
 		case E_PLAYER_ONE:
-			s.game.Player1 = &Player{e.Data, 0}
+			s.game.Players[0] = &json.Player{e.Data, 0, "default"}
 		case E_PLAYER_TWO:
-			s.game.Player2 = &Player{e.Data, 0}
+			s.game.Players[1] = &json.Player{e.Data, 0, "default"}
 		case E_PLAYER_THREE:
-			s.game.Player3 = &Player{e.Data, 0}
+			s.game.Players[2] = &json.Player{e.Data, 0, "default"}
 
 	}
 }
@@ -266,13 +287,13 @@ func(s * S_Adjust_Score) HandleEvent(e Event) State {
 		case E_INCORRECT:
 			nstate := new(S_CheckLastPlayer)
 			nstate.game = s.game
-			if (nstate.game.CurrentPlayer == nstate.game.Player1) {
-				nstate.game.CurrentAttempts += "1"
-			}else if (nstate.game.CurrentPlayer == nstate.game.Player2) {
-				nstate.game.CurrentAttempts += "2"
-			} else {
-				nstate.game.CurrentAttempts += "3"	
-			}
+//			if (nstate.game.CurrentPlayer == nstate.game.Player1) {
+//				nstate.game.CurrentAttempts += "1"
+//			}else if (nstate.game.CurrentPlayer == nstate.game.Player2) {
+//				nstate.game.CurrentAttempts += "2"
+//			} else {
+//				nstate.game.CurrentAttempts += "3"	
+//			}
 			return nstate
 		default:
 			return s

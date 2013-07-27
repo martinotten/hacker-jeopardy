@@ -68,9 +68,9 @@ func WSHandle(con *websocket.Conn) {
 	ws.SetSocket(con)
 
 	if c, err := json.LoadCategories(questionFile); err != nil {
-		ws.UISendGame(c)
-	} else {
 		fmt.Printf(err.Error())
+	} else {
+		ws.UISendGame(c)
 	}
 }
 
