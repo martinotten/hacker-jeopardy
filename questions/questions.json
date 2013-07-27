@@ -1,0 +1,127 @@
+[
+  {
+    "name" : "Colors",
+    "answers" : [
+      {
+        "answer"  : "Smurfs",
+        "question": "What is blue?",
+        "value"   : 100
+      },
+      {
+        "answer"  : "Simpsons",
+        "question": "What is Yellow?",
+        "value"   : 200
+      },
+      {
+        "answer"  : "Kermit",
+        "question": "What is green?",
+        "value"   : 300
+      },
+      {
+        "answer"  : "Prince",
+        "question": "What is purple?",
+        "value"   : 400
+      },
+      {
+        "answer"  : "EL James",
+        "question": "What is grey?",
+        "value"   : 500
+      },
+
+    ]
+  },
+  
+  {
+    "name" : "Ports",
+    "answers" : [
+      {
+        "answer" : "Port 80",
+        "question" : "Was ist der HTML Port?",
+        "value" : 100
+      },
+      {
+        "answer" : "Port 110",
+        "question" : "What is the POP3 Port?",
+        "value" : 200
+      },
+      {
+        "answer" : "Port 11211",
+        "question" : "What is the memcache port?",
+        "value" : 300
+      },
+      {
+        "answer" : "Port 3000",
+        "question" : "Was ist der default rails server Port",
+        "value" : 400
+      },
+      {
+        "answer" : "Port 8333",
+        "question" : "What is the bitcoin port?",
+        "value" : 500
+      }
+    ]
+  
+  },
+  {
+    "name" : "Favicon's",
+    "answers" : [
+      {
+        "answer" : "https://bits.wikimedia.org/favicon/wikipedia.ico",
+        "question" : "What is the Wikipedia favicon?",
+        "value" : 100
+      },
+      {
+        "answer" : "http://www.koeln.de/favicon.ico",
+        "question" : "What is Cologne Favicon?",
+        "value" : 200
+      },
+      {
+        "answer" : "https://www.google.com/images/icons/product/analytics-16.png",
+        "question" : "What is the google analytics favicon?",
+        "value" : 300
+      },
+      {
+        "answer" : "http://s2.wp.com/wp-content/themes/vip/tctechcrunch2/images/favicon.ico?m=1357660109g",
+        "question" : "WWhat is the techCrunch favicon?",
+        "value" : 400
+      },
+      {
+        "answer" : "http://www.debian.org/favicon.ico",
+        "question" : "What is the Debian favicon?",
+        "value" : 500
+      }
+    ]
+
+  },
+  {
+    "name" : "App Icons",
+    "answers" : [
+      {
+        "answer" : "http://www.schiefen.ws/wp-content/uploads/2012/06/Facebook-Pages-Manager-icon.png",
+        "question" : "What is the Facebook pages icon?",
+        "value" : 100
+      },
+      {
+        "answer" : "http://www.androvid.de/images/icon/Blitzer.de-PLUS.png",
+        "question" : "What is Bliter.de icon?",
+        "value" : 200
+      },
+      {
+        "answer" : "http://fc00.deviantart.net/fs71/i/2012/090/9/a/angry_birds_space_app_icon_by_robrayburn-d4uixlh.png",
+        "question" : "What is the angry birds space icon?",
+        "value" : 300
+      },
+      {
+        "answer" : "https://cdn0.iconfinder.com/data/icons/app-icons-by-arrioch-d3bbu3n/128/adobe_Fw.png",
+        "question" : "WWhat is the Adobe Fireworks icon?",
+        "value" : 400
+      },
+      {
+        "answer" : "http://icondatabase.net/sites/default/files/icons/pixly-icons-43728/pixly-icons-app2sd-icon-43794.png",
+        "question" : "What is the App2SD icon?",
+        "value" : 500
+      }
+    ]
+
+  }
+]
