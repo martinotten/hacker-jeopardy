@@ -11,6 +11,9 @@
   </div>
   <div class="clear"></div>
   <div id="main">
+    <blockquote>
+      Let's be honest. Neither one of us knows what that thing does. Just put it in the corner and I'll deal with it later. 
+    </blockquote>
   </div>
   <script id="template-categories" type="template/handlebars">
   <div id="categories">
@@ -31,7 +34,7 @@
   <script id="template-players" type="template/handlebars">
   <ul>
     {{#each players}}
-    <li class="{{#if active}}active{{/if}}">
+    <li class="{{status}}">
       <span class="name">{{name}}</span>
       <span class="score {{#if positive_score}}positive{{else}}negative{{/if}}">{{score}}</span>
     </li>
@@ -48,9 +51,7 @@
   </script>
 
   <script type="text/javascript" src="handlebars.js"></script>
-  <script type="text/javascript" src="underscore.js"></script>
   <script type="text/javascript" src="jquery.js"></script>
-  <script type="text/javascript" src="backbone.js"></script>
   <script type="text/javascript" src="main.js"></script>
 </body>
 </html>
