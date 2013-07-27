@@ -1,0 +1,65 @@
+[
+  {
+    "name" : "Colors",
+    "answers" : [
+      {
+        "answer"  : "Smurfs",
+        "question": "What is blue?",
+        "value"   : 100
+      },
+      {
+        "answer"  : "Simpsons",
+        "question": "What is Yellow?",
+        "value"   : 200
+      },
+      {
+        "answer"  : "Kermit",
+        "question": "What is green?",
+        "value"   : 300
+      },
+      {
+        "answer"  : "Prince",
+        "question": "What is purple?",
+        "value"   : 400
+      },
+      {
+        "answer"  : "EL James",
+        "question": "What is grey?",
+        "value"   : 500
+      },
+
+    ]
+  },
+  
+  {
+    "name" : "Ports",
+    "answers" : [
+      {
+        "answer" : "Port 80",
+        "question" : "Was ist der HTML Port?",
+        "value" : 100
+      },
+      {
+        "answer" : "Port 110",
+        "question" : "What is the POP3 Port?",
+        "value" : 200
+      },
+      {
+        "answer" : "Port 11211",
+        "question" : "What is the memcache port?",
+        "value" : 300
+      },
+      {
+        "answer" : "Port 3000",
+        "question" : "Was ist der default rails server Port",
+        "value" : 400
+      },
+      {
+        "answer" : "Port 8333",
+        "question" : "What is the bitcoin port?",
+        "value" : 500
+      }
+    ]
+  
+  }
+]
