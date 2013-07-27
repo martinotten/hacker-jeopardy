@@ -60,16 +60,6 @@ type State interface {
 	HandleEvent(Event) State
 
 }
-//type Player struct {
-//	Name string
-//	Score int
-//}
-
-//type Question struct {
-//	Answer string
-//	Question string
-//	Value int
-//}
 
 type Game struct {
 	GameState State
