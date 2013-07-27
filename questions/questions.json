@@ -26,8 +26,7 @@
         "answer"  : "EL James",
         "question": "What is grey?",
         "value"   : 500
-      },
-
+      }
     ]
   },
   
@@ -119,6 +118,36 @@
       {
         "answer" : "http://icondatabase.net/sites/default/files/icons/pixly-icons-43728/pixly-icons-app2sd-icon-43794.png",
         "question" : "What is the App2SD icon?",
+        "value" : 500
+      }
+    ]
+  },
+  {
+    "name" : "Torten",
+    "answers" : [
+      {
+        "answer" : "Rot Weiss Schwarz",
+        "question" : "Schwarzwälder Kirsch Torte",
+        "value" : 100
+      },
+      {
+        "answer" : "Gelb Rot Schwarz",
+        "question" : "Donau Welle",
+        "value" : 200
+      },
+      {
+        "answer" : "Weiss Rot",
+        "question" : "Kirsch-Sahne Torte",
+        "value" : 300
+      },
+      {
+        "answer" : "Schwarz-Gelb",
+        "question" : "Russischer Zupfkuchen",
+        "value" : 400
+      },
+      {
+        "answer" : "Beige Gestreift",
+        "question" : "Baumkuchen",
         "value" : 500
       }
     ]
