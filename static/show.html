@@ -3,6 +3,7 @@
 <html>
 <head>
   <title>Hacker Jeopardy</title>
+  <link rel="stylesheet" href="default.css"></link>
 </head>
 
 <body>
@@ -15,9 +16,9 @@
   <div id="categories">
     {{#each categories}}
     <div class="category">
-      <h2>{{title}}</h2>
+      <h2>{{name}}</h2>
       <ul>
-      {{#each questions}}
+      {{#each answers}}
         <li>{{value}}</li>
       {{/each}}
       </ul>
@@ -28,8 +29,8 @@
   
   <script id="template-players" type="template/handlebars">
   <ul>
-    {{#each player}}
-    <li class="{{if active}}active{{/if}}">
+    {{#each players}}
+    <li class="{{#if active}}active{{/if}}">
       <span class="name">{{name}}</span>
       <span class="score {{#if positive_score}}positive{{else}}negative{{/if}}">{{score}}</span>
     </li>
@@ -40,13 +41,13 @@
   <script id="template-answer" type="template/handlebars">
   <div id="answer">
     {{answer}}
-    {{value}}
   </div>
   </script>
-  
-  <script type="javascript" src="underscore.js"></script>  
-  <script type="javascript" src="jquery.js"></script>
-  <script type="javascript" src="backbone.js"></script>
-  <script type="javascript" src="main.js"></script>
+
+  <script type="text/javascript" src="handlebars.js"></script>
+  <script type="text/javascript" src="underscore.js"></script>
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="backbone.js"></script>
+  <script type="text/javascript" src="main.js"></script>
 </body>
 </html>
