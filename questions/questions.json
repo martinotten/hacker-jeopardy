@@ -152,5 +152,36 @@
       }
     ]
 
+  },
+  {
+    "name" : "Famous Coder",
+    "answers" : [
+      {
+        "answer" : "Tim Berners-Lee",
+        "question" : "Who invented the Web?",
+        "value" : 100
+      },
+      {
+        "answer" : "Konrad Zuse",
+        "question" : "Who build the first computer?",
+        "value" : 200
+      },
+      {
+        "answer" : "Alan Turing",
+        "question" : "Who invented the touring machine",
+        "value" : 300
+      },
+      {
+        "answer" : "Yukihiro Matsumoto",
+        "question" : "Who invented Ruby?",
+        "value" : 400
+      },
+      {
+        "answer" : "John Backus",
+        "question" : "Who invented Fortran",
+        "value" : 500
+      }
+    ]
+
   }
 ]
