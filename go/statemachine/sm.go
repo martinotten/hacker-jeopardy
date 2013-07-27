@@ -2,30 +2,34 @@ package statemachine
 
 import (
 	"jeopardy/json"
+	"jeopardy/comms"
 )
 
 import (
 	"fmt"
+	"math/rand"
+	"strings"
+	"strconv"
 )
 type StateId int
 
-const (
-	IDLE StateId = iota    // beginning of the game (expected input: admin starts game)
-	NEW_GAME             // admin started game (expected input: player1 name)
-	PLAYER              // player1 (expected input: player2 name)
-//	PLAYER2              // player2 (expected input: player3 name)
-	START_GAME					 // all names know, broadcast board
-	PICK_PLAYER          // server picks player (expected input: question picked by player)
-	QUESTION_PICKED      // question is picked, display, start timer (expected input: buzzer 1,2 or 3)
-	ANSWER_QUESTION      // first buzzer pressed ansers, start timer (expected input: correct, incorrect, timer_expired)
-	ADJUST_SCORE
-	CORRECT              // adjust player score -> CHK_GAME_OVER
-	WRONG                // addjust player score -> QUESTION_PICKED / CHK_GAME_OVER
-	LAST_PLAYER          // have all players (unsuccessfully) tried to anser 
-	CHK_GAME_OVER        // check if any questions are left on the board -> pick player / GAME_OVER
-	GAME_OVER
-	DETERMINE_WINNER
-)
+//const (
+//	IDLE StateId = iota    // beginning of the game (expected input: admin starts game)
+//	NEW_GAME             // admin started game (expected input: player1 name)
+//	PLAYER              // player1 (expected input: player2 name)
+////	PLAYER2              // player2 (expected input: player3 name)
+//	START_GAME					 // all names know, broadcast board
+//	PICK_PLAYER          // server picks player (expected input: question picked by player)
+//	QUESTION_PICKED      // question is picked, display, start timer (expected input: buzzer 1,2 or 3)
+//	ANSWER_QUESTION      // first buzzer pressed ansers, start timer (expected input: correct, incorrect, timer_expired)
+//	ADJUST_SCORE
+//	CORRECT              // adjust player score -> CHK_GAME_OVER
+//	WRONG                // addjust player score -> QUESTION_PICKED / CHK_GAME_OVER
+//	LAST_PLAYER          // have all players (unsuccessfully) tried to anser 
+//	CHK_GAME_OVER        // check if any questions are left on the board -> pick player / GAME_OVER
+//	GAME_OVER
+//	DETERMINE_WINNER
+//)
 
 
 const (
@@ -51,7 +55,6 @@ type Event struct {
 }
 
 type State interface {
-	Id() StateId
 	Game() *Game
 	EnterState(Event) 
 	HandleEvent(Event) State
@@ -62,29 +65,35 @@ type State interface {
 //	Score int
 //}
 
-type Question struct {
-	Answer string
-	Question string
-	Value int
-}
+//type Question struct {
+//	Answer string
+//	Question string
+//	Value int
+//}
 
 type Game struct {
 	GameState State
 	Players []*json.Player
-	CurrentPlayer *json.Player
-	CurrentQuestion * Question
+	CurrentPlayer int // 0 noone ...
+	LastCorrectAnswer int // 0 noone, 1 player 1, 2 = player 2...
+	CurrentQuestion * json.Answer
 	CurrentAttempts string  // keeps track of who has tried to answer the current Question
 	QuestionsRemaining int
 	Categories []*json.Category
+
+	Admin	*comms.Admin
+	UI    *comms.WebsocketHandler
 	// Buzzer 1
 	// Buzzer 2
 	// Buzzer 3
 	// UI
 }
 
-func NewGame(fn string)*Game {
+func NewGame(fn string, admin *comms.Admin)*Game {
 	var err error
 	game := new(Game)
+	game.Admin = admin
+
 	if game.Categories, err = json.LoadCategories(fn); err != nil {
 		fmt.Printf("%s\n", err)
 		panic(err.Error())
@@ -94,9 +103,28 @@ func NewGame(fn string)*Game {
 	game.Players[1] = &json.Player{"2", 0, "default"}
 	game.Players[2] = &json.Player{"3", 0, "default"}
 
+	game.GameState = new(S_Idle)
+
 	return game
 }
 
+// sends the current gamestate to the web client
+func (g * Game) SendGameState() {
+	state := json.GameState{}
+	state.Categories = g.Categories
+	state.Players    = g.Players
+	if (g.CurrentQuestion != nil) {
+		state.Answer = g.CurrentQuestion.Answer
+	}
+	if (g.UI != nil) {
+		g.UI.SendGameState(&state)
+	} else {
+		g.Admin.Prompt("no websocket!")
+	}
+}
+
+
+// Input from Admin
 func (g * Game) HandleEvent (e Event) {
 	g.GameState = g.GameState.HandleEvent(e)
 	g.GameState.EnterState(e)
@@ -114,7 +142,6 @@ type S_Idle struct {
 	baseState
 }
 
-func (s * S_Idle) Id()StateId {return IDLE}
 func (s * S_Idle) EnterState(e Event) {return}
 func (s * S_Idle) HandleEvent(e Event)State {
 	if (e.Id == E_START_GAME) {
@@ -128,9 +155,8 @@ func (s * S_Idle) HandleEvent(e Event)State {
 type S_NewGame struct {
 	baseState
 }
-func (s * S_NewGame) Id()StateId {return NEW_GAME}
 func (s * S_NewGame) EnterState(e Event) {
-	// send board to server
+	s.game.SendGameState()
 	// send (something) to buzzer
 }
 func (s * S_NewGame) HandleEvent(e Event)State {
@@ -147,7 +173,6 @@ func (s * S_NewGame) HandleEvent(e Event)State {
 type S_Player struct {
 	baseState
 }
-func (s * S_Player) Id()StateId {return PLAYER}
 func (s * S_Player) EnterState(e Event) {
 	switch (e.Id) {
 		case E_PLAYER_ONE:
@@ -156,8 +181,11 @@ func (s * S_Player) EnterState(e Event) {
 			s.game.Players[1] = &json.Player{e.Data, 0, "default"}
 		case E_PLAYER_THREE:
 			s.game.Players[2] = &json.Player{e.Data, 0, "default"}
-
+		default:
+			s.game.Admin.Prompt("unexpected event")
+			return
 	}
+	s.game.SendGameState()
 }
 func (s * S_Player) HandleEvent(e Event)(state State) {
 	switch (e.Id) {
@@ -179,9 +207,9 @@ type S_StartGame struct {
 	baseState
 }
 
-func (s * S_StartGame) Id()StateId{return START_GAME}
 func (s * S_StartGame) EnterState(e Event) {
 	// set up board. broadcast
+	s.game.SendGameState()
 	s.game.HandleEvent(e) // advance to next state automatically.
 }
 func (s * S_StartGame) HandleEvent(e Event)State{
@@ -193,16 +221,20 @@ func (s * S_StartGame) HandleEvent(e Event)State{
 type S_PickPlayer struct {
 	baseState
 }
-func (s * S_PickPlayer) Id()StateId{return PICK_PLAYER}
 func (s * S_PickPlayer) EnterState(e Event) {
 	// reset some state
 	s.game.CurrentAttempts = ""
 	// pick player and broadcast
+	if s.game.LastCorrectAnswer != 0 {
+		s.game.CurrentPlayer = s.game.LastCorrectAnswer
+	} else {
+		s.game.CurrentPlayer = (rand.Int() % 3) + 1
+	}
+	s.game.Players[s.game.CurrentPlayer -1].Status = "active"
+	s.game.SendGameState()
 }
 func (s * S_PickPlayer) HandleEvent(e Event)State {
 	if (e.Id == E_QUESTION_CHOSEN) {
-		// tell ui question
-		// display question to admin
 		nstate := new(S_QuestionChosen)
 		nstate.game = s.game
 		return nstate
@@ -214,9 +246,32 @@ type S_QuestionChosen struct {
 	baseState
 }
 
-func(s * S_QuestionChosen) Id() StateId {return QUESTION_PICKED}
 func(s * S_QuestionChosen) EnterState(e Event) {
-		// start_timer
+		// tell ui question
+		// display question to admin
+		cat_ques := strings.Split(e.Data, "_")
+		var cat int64
+		var ques int64
+		var err error
+		if cat, err = strconv.ParseInt(cat_ques[0], 10, 32); err != nil {
+			mes := fmt.Sprintf("error parsing %s : %s", cat_ques[0], err.Error())
+			s.game.Admin.Prompt(mes)
+		}
+		if ques, err = strconv.ParseInt(cat_ques[1], 10, 32); err != nil {
+			mes := fmt.Sprintf("error parsing %s : %s", cat_ques[1], err.Error())
+			s.game.Admin.Prompt(mes)
+		}
+
+		category := s.game.Categories[cat-1]
+		answer   := category.Answers[ques-1]
+		s.game.CurrentQuestion = &answer
+
+		s.game.Admin.Prompt(answer.Answer)
+		s.game.Admin.Prompt(answer.Question)
+
+		s.game.SendGameState()
+
+		// TODO start_timer
 }
 func(s * S_QuestionChosen) HandleEvent(e Event) State {
 	nstate := new(S_AnswerExpected)
@@ -241,10 +296,29 @@ type S_AnswerExpected struct {
 	baseState
 }
 
-func(s * S_AnswerExpected) Id() StateId {return ANSWER_QUESTION}
 func(s * S_AnswerExpected) EnterState(e Event) {
-		// start_timer
+		
+		switch (e.Id) {
+		case E_BUZZER_ONE:
+			s.game.CurrentPlayer = 1
+		case E_BUZZER_TWO:
+			s.game.CurrentPlayer = 2
+		case E_BUZZER_THREE:
+			s.game.CurrentPlayer = 3
+		}
+		for i, player := range s.game.Players {
+			if i+1 == s.game.CurrentPlayer {
+				player.Status = "active"
+			} else {
+				player.Status = "default"
+			}
+		}
+		s.game.SendGameState()
+		s.game.Admin.Prompt("Was the given Answer correct?")
+
+		// TODO start_timer
 }
+
 func(s * S_AnswerExpected) HandleEvent(e Event) State {
 	var nstate State
 	switch (e.Id) {
@@ -267,14 +341,16 @@ type S_Adjust_Score struct {
 	baseState
 }
 
-func(s * S_Adjust_Score) Id() StateId {return ADJUST_SCORE}
 func(s * S_Adjust_Score) EnterState(e Event) {
 		switch (e.Id) {
 		case E_CORRECT:
-			s.game.CurrentPlayer.Score += s.game.CurrentQuestion.Value
+			s.game.Players[s.game.CurrentPlayer-1].Score = s.game.CurrentQuestion.Value
+			s.game.LastCorrectAnswer = s.game.CurrentPlayer
 		case E_INCORRECT:
-			s.game.CurrentPlayer.Score -= s.game.CurrentQuestion.Value
+			s.game.Players[s.game.CurrentPlayer-1].Score = s.game.CurrentQuestion.Value
 		}
+		s.game.SendGameState()
+
 		s.game.HandleEvent(e)
 
 }
@@ -287,13 +363,13 @@ func(s * S_Adjust_Score) HandleEvent(e Event) State {
 		case E_INCORRECT:
 			nstate := new(S_CheckLastPlayer)
 			nstate.game = s.game
-//			if (nstate.game.CurrentPlayer == nstate.game.Player1) {
-//				nstate.game.CurrentAttempts += "1"
-//			}else if (nstate.game.CurrentPlayer == nstate.game.Player2) {
-//				nstate.game.CurrentAttempts += "2"
-//			} else {
-//				nstate.game.CurrentAttempts += "3"	
-//			}
+			if (nstate.game.CurrentPlayer == 1) {
+				nstate.game.CurrentAttempts += "1"
+			}else if (nstate.game.CurrentPlayer == 2) {
+				nstate.game.CurrentAttempts += "2"
+			} else {
+				nstate.game.CurrentAttempts += "3"	
+			}
 			return nstate
 		default:
 			return s
@@ -304,7 +380,6 @@ type S_CheckGameOver struct {
 	baseState
 }
 
-func(s * S_CheckGameOver) Id() StateId {return CHK_GAME_OVER }
 func(s * S_CheckGameOver) EnterState(e Event) {
 	s.HandleEvent(e)
 }
@@ -324,7 +399,6 @@ type S_CheckLastPlayer struct {
 	baseState
 }
 
-func(s * S_CheckLastPlayer) Id() StateId {return LAST_PLAYER }
 func(s * S_CheckLastPlayer) EnterState(e Event) {
 	s.game.HandleEvent(e)
 }
@@ -343,7 +417,6 @@ type S_DetermineWinner struct {
 	baseState
 }
 
-func(s * S_DetermineWinner) Id() StateId {return LAST_PLAYER }
 func(s * S_DetermineWinner) EnterState(e Event) {
 	// broadcast winner.
 }

@@ -1,16 +1,12 @@
 package comms
 
 
-import (
-	"jeopardy/statemachine"
-)
 
 import (
 	"fmt"
 ) 
 
 type Admin struct {
-	Game *statemachine.Game
 }
 
 

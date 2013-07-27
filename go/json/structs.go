@@ -25,8 +25,8 @@ type Player struct {
 }
 
 type GameState struct {
-	Categories []Category `json:"categories"`
-	Players    []Player   `json:"players"`
+	Categories []*Category `json:"categories"`
+	Players    []*Player   `json:"players"`
 	Answer     string     `json:"answer"`
 }
 
