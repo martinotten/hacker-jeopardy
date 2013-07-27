@@ -19,7 +19,7 @@ func (ws * WebsocketHandler)SetSocket (con *websocket.Conn) {
 	ws.encoder = J.NewEncoder(con)
 }
 
-func (ws * WebsocketHandler) UISendNewGame(cats []*json.Category) error {
+func (ws * WebsocketHandler) UISendGame(cats []*json.Category) error {
 	if ws.encoder == nil {
 		return fmt.Errorf("no websocket")
 	}
