@@ -6,6 +6,44 @@
 </head>
 
 <body>
+  <div id="players">
+  </div>
+  
+  <div id="main">
+  </div>
+  <script id="template-categories" type="template/handlebars">
+  <div id="categories">
+    {{#each categories}}
+    <div class="category">
+      <h2>{{title}}</h2>
+      <ul>
+      {{#each questions}}
+        <li>{{value}}</li>
+      {{/each}}
+      </ul>
+    </div>
+    {{/each}}
+  </div>
+  </script>
+  
+  <script id="template-players" type="template/handlebars">
+  <ul>
+    {{#each player}}
+    <li class="{{if active}}active{{/if}}">
+      <span class="name">{{name}}</span>
+      <span class="score {{#if positive_score}}positive{{else}}negative{{/if}}">{{score}}</span>
+    </li>
+    {{/each}}
+  </ul>
+  </script>
+  
+  <script id="template-answer" type="template/handlebars">
+  <div id="answer">
+    {{answer}}
+    {{value}}
+  </div>
+  </script>
+  
   <script type="javascript" src="underscore.js"></script>  
   <script type="javascript" src="jquery.js"></script>
   <script type="javascript" src="backbone.js"></script>
