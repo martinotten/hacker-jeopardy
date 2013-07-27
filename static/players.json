@@ -2,16 +2,16 @@
   {
     "name": "Fefe",
     "score": -1000,
-    "active": false
+    "status": "active"
   },
   {
     "name": "Schlaubi Schlumpf",
     "score": 100,
-    "active": false
+    "status": "passive"
   },
   {
     "name": "Michaela S.",
     "score": 300,
-    "active": false
+    "status": "default"
   }
 ]

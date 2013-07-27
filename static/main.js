@@ -1,172 +1,42 @@
-var players, categories;
-
-/*****
-  Models
-*****/
-
-var Player = Backbone.Model.extend({
-  positive_score: function() {
-    return this.get('score') >= 0;
-  }
-});
-
-var Category = Backbone.Model.extend({
-});
-
-var Answer = Backbone.Model.extend({
-});
-
-/*****
-  Collections
-*****/
-
-var Players = Backbone.Collection.extend({
-  model: Player
-});
-
-var Categories = Backbone.Collection.extend({
-  model: Category
-});
-
-var Answers = Backbone.Collection.extend({
-  model: Answer
-});
-
-/*****
-  Views
-*****/
-
-var OverviewView = Backbone.View.extend({
-  collection: undefined,
-  rootElement: undefined,
-  source: $("#template-categories").html(),
-
-  initialize: function(options) {
-    this.collection = options['collection'];
-    this.rootElement = options['root'];
-
-    this.render();
-  },
-
-  render: function() {
-    var template = Handlebars.compile(this.source);
-    var categories = this.collection.map(function(category) {
-      return {
-        name: category.get('name'),
-        answers: category.get('answers').map(function(answer) {
-          return {
-            answer: answer.get("answer"),
-            value: answer.get("value")
-          }
-        }),
-      };
-    });
-    console.log(categories);
-    this.rootElement.html(template({categories: categories}));
-  }
-  
-});
-
-var AnswerView = Backbone.View.extend({
-  answer: undefined,
-  rootElement: undefined,
-  template: Handlebars.compile($("#template-answer").html()),
-  
-  initialize: function(options) {
-    this.answer = options['answer'];
-    this.rootElement = options['root'];
-
-    this.render();
-  },
-
-  render: function() {
-    this.rootElement.html(this.template({answer: this.answer.get('answer')}));
-  }
-});
-
-var PlayersView = Backbone.View.extend({
-  collection: undefined,
-  rootElement: undefined,
-  source: $("#template-players").html(),
-
-  initialize: function(options) {
-    _.bindAll(this, "render");
-
-    this.collection = options['collection'];
-    this.rootElement = options['root'];
-    this.listenTo(this.collection, "change:score", this.render);
-    this.render();
-  },
-
-  render: function() {
-    var template = Handlebars.compile(this.source);
-    var players = this.collection.map(function(player) {
-      return {
-        name: player.get('name'),
-        score: player.get('score'),
-        active: player.get('active'),
-        positive_score: player.positive_score()
-      };
-    });
-    this.rootElement.html(template({players: players}));
-  }
-});
-
-var AppRouter = Backbone.Router.extend({
-
-  routes: {
-    //"start"
-    "overview": "overview",
-    "answer/:category/:value": "answer",
-    // "scorescreen",
-  },
-
-  overview: function() {
-    console.log('overview');
-    $.ajax({
-      url: "categories.json",
-      cache: false
-    }).done(function(categories) {
-      var categoryModels = _.map(categories, function(category) {
-        var answers = _.map(category['answers'], function(answer) {
-          return new Answer(answer);
-        });
-        category['answers'] = new Answers(answers);
-        return new Category(category);
-      });
-
-      var mainElement = $("div#main");
-      new OverviewView({collection: new Categories(categoryModels), root: mainElement});
-    });
-  },
-
-  answer: function(category, value) {
-    $.ajax({
-      url: "categories.json",
-      cache: false
-    }).done(function(categories) {
-      /*var categoryModels = _.map(categories, function(category) {
-      #  var answers = _.map(category['answers'], function(answer) {
-      #    return new Answer(answer);
-      #  });
-      #  category['answers'] = new Answers(answers);
-      #  return new Category(category);
-      #});
-*/
-      var mainElement = $("div#main");
-      new AnswerView({answer: new Answer({answer: "Red Bull"}), root: mainElement});
+function renderPlayers(players) {
+  var addPositiveScores(players) {
+    return players.map(function(player) {
+      player['positive_score'] = player['score'] >= 0;
+      return player;
     });
   }
+  players = addPositiveScores(players);
+  var playersElement = $("div#players");
+  var template = Handlebars.compile($("#template-players").html());
+  $("div#main").html(template({players: players}));
+}
 
-});
+function renderCategories(categories) {
+  var mainElement = $("div#main");
+  var template = Handlebars.compile($("#template-categories").html());
+  mainElement.html(this.template({categories: categories}));
+}
+
+function renderAnswer(answer) {
+  var mainElement = $("div#main");
+  var template = Handlebars.compile($("#template-answer").html());
+  mainElement.html(this.template({answer: answer}));
+}
 
 $(document).ready(function() {
-  new AppRouter();
-  var playersElement = $("div#players");
   var socket = new WebSocket("ws://localhost:9090/ws/");
   socket.onmessage = function (event) {
-    console.log(event);
-  }
+    var data = $.parseJSON(event);
+    if(data["players"]) {
+      renderPlayers(data["players"]);
+    }
 
-  Backbone.history.start();
+    if(data["categories"]) {
+      renderCategories(data["categories"]);
+    }
+
+    if(data["answer"]) {
+      renderAnswer(data["answer"]);
+    }
+  }
 });
