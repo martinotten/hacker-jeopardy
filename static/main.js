@@ -163,6 +163,7 @@ var AppRouter = Backbone.Router.extend({
 $(document).ready(function() {
   new AppRouter();
   var playersElement = $("div#players");
+  var socket = new WebSocket("ws://localhost:9090/ws");
 
   $.ajax({
     url: "players.json",

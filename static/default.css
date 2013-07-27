@@ -1,0 +1,52 @@
+div#players {
+  width: 90%;
+}
+
+div#players ul,
+div#categories ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+div#players ul li {
+  display: block;
+  float: left;
+  width: 32%;
+  text-align: center;
+  margin: 0.5%;
+  padding: 2% 0;
+  background-color: #EEEEEE;
+}
+
+
+div#main {
+  width: 88.2%;
+  margin-left: 0.5%;
+  text-align: center;
+}
+
+div#answer {
+  background-color: #EEEEEE;
+  padding: 100px 0;
+}
+
+div.category {
+  width: 19%;
+  margin: 0.5%;
+  float: left;
+}
+
+div.category ul li {
+  background-color: #EEEEEE;
+  margin: 2px 0;
+  padding: 15% 0;
+}
+
+div#players ul li span {
+  display: block;
+}
+
+div.clear {
+  clear: both;
+}
