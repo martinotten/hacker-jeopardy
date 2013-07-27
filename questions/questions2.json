@@ -1,0 +1,63 @@
+[
+  {
+    "name" : "Magic Numbers",
+    "answers" : [
+      {
+        "answer" : "3.14",
+        "question" : "Which value has Py?",
+        "value" : 100
+      },
+      {
+        "answer" : "42",
+        "question" : "What is the Answer to the Ultimate Question of Life, the Universe, and Everything?",
+        "value" : 200
+      },
+      {
+        "answer" : "2.71",
+        "question" : "Which value has Euler's number?",
+        "value" : 300
+      },
+      {
+        "answer" : "E100",
+        "question" : "What is the first Value (Curcumin) in the list of food additives?",
+        "value" : 400
+      },
+      {
+        "answer" : "25 50 44 46",
+        "question" : "Whit wich hex sequence do PDF files start with?",
+        "value" : 500
+      }
+    ]
+  
+  },
+  {
+    "name" : "patchlevel/release",
+    "answers" : [
+      {
+        "answer" : "247",
+        "question" : "What is the last Patchlevel of ruby 2.0?",
+        "value" : 100
+      },
+      {
+        "answer" : "448",
+        "question" : "What is the last Patchlevel of ruby 1.9.3?",
+        "value" : 200
+      },
+      {
+        "answer" : "374",
+        "question" : "What is the last Patchlevel of ruby 1.8.7?",
+        "value" : 300
+      },
+      {
+        "answer" : "1.7.4",
+        "question" : "What is the last version of jruby?",
+        "value" : 400
+      },
+      {
+        "answer" : "2.7.5",
+        "question" : "Wich is the last python release?",
+        "value" : 500
+      }
+    ]
+  }
+]
