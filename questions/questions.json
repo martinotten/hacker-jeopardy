@@ -92,5 +92,36 @@
       }
     ]
 
+  },
+  {
+    "name" : "App Icons",
+    "answers" : [
+      {
+        "answer" : "http://www.schiefen.ws/wp-content/uploads/2012/06/Facebook-Pages-Manager-icon.png",
+        "question" : "What is the Facebook pages icon?",
+        "value" : 100
+      },
+      {
+        "answer" : "http://www.androvid.de/images/icon/Blitzer.de-PLUS.png",
+        "question" : "What is Bliter.de icon?",
+        "value" : 200
+      },
+      {
+        "answer" : "http://fc00.deviantart.net/fs71/i/2012/090/9/a/angry_birds_space_app_icon_by_robrayburn-d4uixlh.png",
+        "question" : "What is the angry birds space icon?",
+        "value" : 300
+      },
+      {
+        "answer" : "https://cdn0.iconfinder.com/data/icons/app-icons-by-arrioch-d3bbu3n/128/adobe_Fw.png",
+        "question" : "WWhat is the Adobe Fireworks icon?",
+        "value" : 400
+      },
+      {
+        "answer" : "http://icondatabase.net/sites/default/files/icons/pixly-icons-43728/pixly-icons-app2sd-icon-43794.png",
+        "question" : "What is the App2SD icon?",
+        "value" : 500
+      }
+    ]
+
   }
 ]
