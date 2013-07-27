@@ -61,5 +61,36 @@
       }
     ]
   
+  },
+  {
+    "name" : "Favicon's",
+    "answers" : [
+      {
+        "answer" : "https://bits.wikimedia.org/favicon/wikipedia.ico",
+        "question" : "What is the Wikipedia favicon?",
+        "value" : 100
+      },
+      {
+        "answer" : "http://www.koeln.de/favicon.ico",
+        "question" : "What is Cologne Favicon?",
+        "value" : 200
+      },
+      {
+        "answer" : "https://www.google.com/images/icons/product/analytics-16.png",
+        "question" : "What is the google analytics favicon?",
+        "value" : 300
+      },
+      {
+        "answer" : "http://s2.wp.com/wp-content/themes/vip/tctechcrunch2/images/favicon.ico?m=1357660109g",
+        "question" : "WWhat is the techCrunch favicon?",
+        "value" : 400
+      },
+      {
+        "answer" : "http://www.debian.org/favicon.ico",
+        "question" : "What is the Debian favicon?",
+        "value" : 500
+      }
+    ]
+
   }
 ]
