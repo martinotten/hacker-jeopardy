@@ -7,8 +7,13 @@ import (
 	"time"
 )
 
+import (
+	"jeopardy/comms"
+)
 
-const assetDir    = "./assets"
+import "code.google.com/p/go.net/websocket"
+
+const assetDir    = "./static"
 
 
 type LogHandler struct {
@@ -54,7 +59,14 @@ func MakeLogging (h http.Handler)http.Handler {
 	return &LogHandler{h}
 }
 
+var ws comms.WebsocketHandler
+func WSHandle(con *websocket.Conn) {
+	ws = comms.WebsocketHandler{}
+	ws.SetSocket(con)
+}
+
 func main (){
 		http.Handle("/", MakeLogging(http.FileServer(http.Dir(assetDir))))
+		http.Handle("/ws/", websocket.Handler(WSHandle))
 		http.ListenAndServe(":9090", nil)
 }
