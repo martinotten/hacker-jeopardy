@@ -26,25 +26,33 @@ func (a * Admin) StartGame(game * Game) {
 }
 
 func (a * Admin) GetPlayer1 (game * Game) {
+	go func() {
 	a.Prompt("Enter Name Player1: ")
 	var name string
 	fmt.Scanln(&name)
 	event := Event{E_PLAYER_ONE, name}
 	game.HandleEvent(event)
+	}()
 }
 
 
 func (a * Admin) GetPlayer2 (game * Game) {
+	go func() {
 	a.Prompt("Enter Name Player2: ")
 	var name string
 	fmt.Scanln(&name)
 	event := Event{E_PLAYER_TWO, name}
 	game.HandleEvent(event)
+	}()
 }
 func (a * Admin) GetPlayer3 (game * Game) {
+	go func() {
 	a.Prompt("Enter Name Player3: ")
 	var name string
 	fmt.Scanln(&name)
 	event := Event{E_PLAYER_THREE, name}
 	game.HandleEvent(event)
+	}()
 }
+
+func (a * Admin) ChooseCategory(game * Game) {}
