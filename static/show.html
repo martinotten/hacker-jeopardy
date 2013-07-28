@@ -8,6 +8,21 @@
 
 <body>
   <div id="players">
+    <ul>
+      <li class="{{status}}">
+        <span class="name">Test1</span>
+        <span class="score {{#if positive_score}}positive{{else}}negative{{/if}}">{{score}}</span>
+      </li>
+      <li class="{{status}}">
+        <span class="name">Test2</span>
+        <span class="score {{#if positive_score}}positive{{else}}negative{{/if}}">{{score}}</span>
+      </li>
+      <li class="{{status}}">
+        <span class="name">Test3</span>
+        <span class="score {{#if positive_score}}positive{{else}}negative{{/if}}">{{score}}</span>
+      </li>
+    </ul>
+    <div class="clear"></div>
   </div>
   <div class="clear"></div>
   <div id="main">
