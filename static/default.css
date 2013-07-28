@@ -80,6 +80,26 @@ div.category ul li {
   padding: 15% 0;
 }
 
+div.category ul li.done1 {
+  background-color: #FFAAAA;
+  color: #000000;
+}
+
+div.category ul li.done2 {
+  background-color: #AAFFAA;
+  color: #000000;
+}
+
+div.category ul li.done3 {
+  background-color: #AAAAFF;
+  color: #000000;
+}
+
+div.category ul li.donefailed {
+  background-color: #666666;
+  color: #666666;
+}
+
 div#players ul li span {
   display: block;
 }

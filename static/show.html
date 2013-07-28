@@ -22,7 +22,7 @@
       <h2>{{name}}</h2>
       <ul>
       {{#each answers}}
-        <li>{{value}}</li>
+        <li {{#if done}}class="done{{done}}"{{/if}}>{{value}}</li>
       {{/each}}
       </ul>
     </div>
