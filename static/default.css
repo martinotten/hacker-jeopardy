@@ -32,15 +32,15 @@ div#players ul li:nth-child(3) {
 }
 
 div#players ul li:nth-child(1).active {
-  background-color: #FFAAAA;
+  background-color: #FF0000;
 }
 
 div#players ul li:nth-child(2).active {
-  background-color: #AAFFAA;
+  background-color: #00FF00;
 }
 
 div#players ul li:nth-child(3).active {
-  background-color: #AAAAFF;
+  background-color: #0000FF;
 }
 
 div#players ul li:nth-child(1).passive,

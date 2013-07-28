@@ -269,8 +269,7 @@ func(s * S_QuestionChosen) EnterState(e Event) {
 		// tell ui question
 		// display question to admin
 
-println(e.Data)
-
+		if (s.game.CurrentQuestion == nil) {
 		cat_ques := strings.Split(e.Data, "_")
 		var cat int64
 		var ques int64
@@ -287,9 +286,10 @@ println(e.Data)
 		category := s.game.Categories[cat]
 		answer   := category.Answers[ques]
 		s.game.CurrentQuestion = answer
+		}
 
-		s.game.Admin.Prompt(answer.Answer)
-		s.game.Admin.Prompt(answer.Question)
+		s.game.Admin.Prompt(s.game.CurrentQuestion.Answer)
+		s.game.Admin.Prompt(s.game.CurrentQuestion.Question)
 
 		s.game.SendGameState()
 
@@ -372,10 +372,10 @@ func(s * S_Adjust_Score) EnterState(e Event) {
 		println("-> AdjustScore")
 		switch (e.Id) {
 		case E_CORRECT:
-			s.game.Players[s.game.CurrentPlayer-1].Score = s.game.CurrentQuestion.Value
+			s.game.Players[s.game.CurrentPlayer-1].Score += s.game.CurrentQuestion.Value
 			s.game.LastCorrectAnswer = s.game.CurrentPlayer
 		case E_INCORRECT:
-			s.game.Players[s.game.CurrentPlayer-1].Score = s.game.CurrentQuestion.Value
+			s.game.Players[s.game.CurrentPlayer-1].Score -= s.game.CurrentQuestion.Value
 		}
 		s.game.SendGameState()
 
@@ -399,6 +399,7 @@ func(s * S_Adjust_Score) HandleEvent(e Event) State {
 			} else {
 				nstate.game.CurrentAttempts += "3"	
 			}
+			nstate.game.Players[nstate.game.CurrentPlayer - 1].Status = "passive"
 			return nstate
 		default:
 			return s
