@@ -7,7 +7,7 @@ import "code.google.com/p/go.net/websocket"
 
 import (
 	"fmt"
-	"os"
+//	"os"
 	J "encoding/json"
 )
 
@@ -28,8 +28,8 @@ func (ws * WebsocketHandler) SendGameState(state *json.GameState) {
 		panic(err.Error())
 	}
 
-	encoder := J.NewEncoder(os.Stdin)
-	encoder.Encode(state)
+	//encoder := J.NewEncoder(os.Stdin)
+	//encoder.Encode(state)
 }
 
 

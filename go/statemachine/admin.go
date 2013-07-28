@@ -59,21 +59,60 @@ func (a * Admin) ChooseCategory(game * Game) {
 	go func() {
 		for i, cat := range game.Categories {
 			if (!cat.Done()) {
-				fmt.Println("%d %s", i, cat.Name)
+				fmt.Printf("%d %s\n", i, cat.Name)
+			} else {
 			}
 		}
+		print("Enter Category: ")
 
 		var i int
 		fmt.Scanln(&i)
+		println("")
 		for j, ans := range game.Categories[i].Answers {
 			if (!ans.Done) {
-				fmt.Println("%d %s", j, ans.Answer)
+				fmt.Printf("%d %s\n", j, ans.Answer)
 			}
 		}
+		print("Enter Question: ")
 		var j int
 		fmt.Scanln(&j)
+		println("")
 
-		event := Event{E_QUESTION_CHOSEN, fmt.Sprintf("%d_%d")}
+		event := Event{E_QUESTION_CHOSEN, fmt.Sprintf("%d_%d", i, j)}
 		game.HandleEvent(event)
+	}()
+}
+
+func (a * Admin) GetBuzzer(game * Game) {
+	go func() {
+		var buzzer string
+		fmt.Scanln(&buzzer)
+		var event Event
+		switch buzzer[0] {
+			case 114:
+				event = Event{E_BUZZER_ONE, ""}
+			case 103:
+				event = Event{E_BUZZER_TWO, ""}
+			case 98:
+				event = Event{E_BUZZER_THREE, ""}
+		}
+		game.HandleEvent(event)
+	}()
+}
+
+func (a * Admin) AnswerCorrect(game * Game) {
+	go func() {
+		a.Prompt("Answer Correct? y/n")
+		var correct string
+		fmt.Scanln(&correct)
+		var first = correct[0:1]
+		switch(first) {
+			case "y":
+				game.HandleEvent(Event{E_CORRECT, ""})
+			case "n":
+				game.HandleEvent(Event{E_INCORRECT, ""})
+			default:
+				a.AnswerCorrect(game)
+		}
 	}()
 }
