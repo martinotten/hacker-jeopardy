@@ -27,7 +27,7 @@ $(document).ready(function() {
   var socket = new WebSocket("ws://localhost:9090/ws/");
   socket.onmessage = function (event) {
     var data = $.parseJSON(event.data);
-    console.log(event);
+    console.log(data);
     if(data["players"]) {
       renderPlayers(data["players"]);
     }
