@@ -8,7 +8,6 @@ import (
 )
 
 import (
-	"jeopardy/comms"
 	"jeopardy/statemachine"
 )
 
@@ -61,17 +60,24 @@ func MakeLogging (h http.Handler)http.Handler {
 	return &LogHandler{h}
 }
 
-var ws comms.WebsocketHandler
+var ws statemachine.WebsocketHandler
 func WSHandle(con *websocket.Conn) {
-	ws = comms.WebsocketHandler{}
+	ws = statemachine.WebsocketHandler{}
 	ws.SetSocket(con)
 	game.Admin.Prompt("Websocket connected")
+	game.UI = &ws
+
+	con.Write([]byte("{\"hello\":\"hello\"}"))
+	for {
+		b := []byte("bla")
+		con.Read(b)
+	}
 }
 
 var game *statemachine.Game
 
 func main (){
-	admin := comms.Admin{} 
+	admin := statemachine.Admin{} 
 	game  = statemachine.NewGame(q_fn, &admin) 
 	http.Handle("/", MakeLogging(http.FileServer(http.Dir(assetDir))))
 	http.Handle("/ws/", websocket.Handler(WSHandle))

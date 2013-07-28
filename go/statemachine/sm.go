@@ -2,7 +2,6 @@ package statemachine
 
 import (
 	"jeopardy/json"
-	"jeopardy/comms"
 )
 
 import (
@@ -71,15 +70,15 @@ type Game struct {
 	QuestionsRemaining int
 	Categories []*json.Category
 
-	Admin	*comms.Admin
-	UI    *comms.WebsocketHandler
+	Admin	*Admin
+	UI    *WebsocketHandler
 	// Buzzer 1
 	// Buzzer 2
 	// Buzzer 3
 	// UI
 }
 
-func NewGame(fn string, admin *comms.Admin)*Game {
+func NewGame(fn string, admin *Admin)*Game {
 	var err error
 	game := new(Game)
 	game.Admin = admin
@@ -93,9 +92,11 @@ func NewGame(fn string, admin *comms.Admin)*Game {
 	game.Players[1] = &json.Player{"2", 0, "default"}
 	game.Players[2] = &json.Player{"3", 0, "default"}
 
-	game.GameState = new(S_Idle)
-	game.GameState.game = game
+	state := new(S_Idle)
+	state.game = game
+	game.GameState = state
 	game.GameState.EnterState(Event{});
+
 	return game
 }
 
@@ -134,11 +135,11 @@ type S_Idle struct {
 }
 
 func (s * S_Idle) EnterState(e Event) {
-	s.game.Admin.Prompt("Hello!")
+	s.game.Admin.StartGame(s.game)
 	return
 }
 func (s * S_Idle) HandleEvent(e Event)State {
-	if (e.Id == E_START_GAME) {
+	if (e.Id == E_START_GAME && s.game.UI != nil) {
 		var snew S_NewGame
 		snew.game = s.game
 		return &snew
