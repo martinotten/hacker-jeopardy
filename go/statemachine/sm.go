@@ -78,6 +78,18 @@ type Game struct {
 	// UI
 }
 
+func (g * Game) RemaingQuestions () int {
+	var num int
+	for _, cat := range g.Categories {
+		for _, ans := range cat.Answers {
+			if !ans.Done {
+				num += 1
+			}
+		}
+	}
+	return num
+}
+
 func NewGame(fn string, admin *Admin)*Game {
 	var err error
 	game := new(Game)
@@ -135,6 +147,7 @@ type S_Idle struct {
 }
 
 func (s * S_Idle) EnterState(e Event) {
+	println("->Idle")
 	s.game.Admin.StartGame(s.game)
 	return
 }
@@ -151,7 +164,7 @@ type S_NewGame struct {
 	baseState
 }
 func (s * S_NewGame) EnterState(e Event) {
-	println("New Game")
+	println("->New Game")
 	s.game.SendGameState()
 	// send (something) to buzzer
 	s.game.Admin.GetPlayer1(s.game)
@@ -171,7 +184,7 @@ type S_Player struct {
 	baseState
 }
 func (s * S_Player) EnterState(e Event) {
-	println("Choose Player")
+	println("-> Choose Player")
 	switch (e.Id) {
 		case E_PLAYER_ONE:
 			s.game.Players[0] = &json.Player{e.Data, 0, "default"}
@@ -209,7 +222,7 @@ type S_StartGame struct {
 }
 
 func (s * S_StartGame) EnterState(e Event) {
-	println("Start Game")
+	println("-> Start Game")
 	// set up board. broadcast
 	s.game.SendGameState()
 	s.game.HandleEvent(e) // advance to next state automatically.
@@ -224,7 +237,7 @@ type S_PickPlayer struct {
 	baseState
 }
 func (s * S_PickPlayer) EnterState(e Event) {
-	println("PickPlayer")
+	println("-> PickPlayer")
 	// reset some state
 	s.game.CurrentAttempts = ""
 	// pick player and broadcast
@@ -252,8 +265,12 @@ type S_QuestionChosen struct {
 }
 
 func(s * S_QuestionChosen) EnterState(e Event) {
+	println("-> Question Chosen")
 		// tell ui question
 		// display question to admin
+
+println(e.Data)
+
 		cat_ques := strings.Split(e.Data, "_")
 		var cat int64
 		var ques int64
@@ -267,14 +284,16 @@ func(s * S_QuestionChosen) EnterState(e Event) {
 			s.game.Admin.Prompt(mes)
 		}
 
-		category := s.game.Categories[cat-1]
-		answer   := category.Answers[ques-1]
-		s.game.CurrentQuestion = &answer
+		category := s.game.Categories[cat]
+		answer   := category.Answers[ques]
+		s.game.CurrentQuestion = answer
 
 		s.game.Admin.Prompt(answer.Answer)
 		s.game.Admin.Prompt(answer.Question)
 
 		s.game.SendGameState()
+
+		s.game.Admin.GetBuzzer(s.game)
 
 		// TODO start_timer
 }
@@ -302,7 +321,7 @@ type S_AnswerExpected struct {
 }
 
 func(s * S_AnswerExpected) EnterState(e Event) {
-		
+		println("-> AnswerExpected")
 		switch (e.Id) {
 		case E_BUZZER_ONE:
 			s.game.CurrentPlayer = 1
@@ -319,27 +338,30 @@ func(s * S_AnswerExpected) EnterState(e Event) {
 			}
 		}
 		s.game.SendGameState()
-		s.game.Admin.Prompt("Was the given Answer correct?")
+		s.game.Admin.AnswerCorrect(s.game)
 
 		// TODO start_timer
 }
 
 func(s * S_AnswerExpected) HandleEvent(e Event) State {
-	var nstate State
 	switch (e.Id) {
 		case E_CORRECT:
 			nstate := new(S_Adjust_Score)
+			s.Game().CurrentQuestion.Done = true
+			println(s.Game().CurrentQuestion.Done)
 			nstate.game = s.Game()
+			return nstate
 		case E_INCORRECT:
 			nstate := new(S_Adjust_Score)
 			nstate.game = s.Game()
+			return nstate
 		case E_TIMEOUT_NO_ANSWER:
 			nstate := new(S_CheckGameOver)
 			nstate.game = s.Game()
+			return nstate
 		default:
 			return s
 	}
-	return nstate
 }
 
 type S_Adjust_Score struct {
@@ -347,6 +369,7 @@ type S_Adjust_Score struct {
 }
 
 func(s * S_Adjust_Score) EnterState(e Event) {
+		println("-> AdjustScore")
 		switch (e.Id) {
 		case E_CORRECT:
 			s.game.Players[s.game.CurrentPlayer-1].Score = s.game.CurrentQuestion.Value
@@ -362,6 +385,7 @@ func(s * S_Adjust_Score) EnterState(e Event) {
 func(s * S_Adjust_Score) HandleEvent(e Event) State {
 	switch (e.Id) {
 		case E_CORRECT:
+			s.game.CurrentQuestion = nil
 			nstate := new(S_CheckGameOver)
 			nstate.game = s.game
 			return nstate
@@ -386,10 +410,11 @@ type S_CheckGameOver struct {
 }
 
 func(s * S_CheckGameOver) EnterState(e Event) {
-	s.HandleEvent(e)
+	println("-> check game over")
+	s.game.HandleEvent(e)
 }
 func(s * S_CheckGameOver) HandleEvent(e Event) State {
-	if (s.game.QuestionsRemaining == 0) { // TODO!!
+	if (s.game.RemaingQuestions() == 0) { // TODO!!
 		nstate := new(S_DetermineWinner)
 		nstate.game = s.game
 		return nstate
@@ -405,6 +430,7 @@ type S_CheckLastPlayer struct {
 }
 
 func(s * S_CheckLastPlayer) EnterState(e Event) {
+	println ("-> CheckLastPlayer")
 	s.game.HandleEvent(e)
 }
 func(s * S_CheckLastPlayer) HandleEvent(e Event) State {
@@ -423,6 +449,7 @@ type S_DetermineWinner struct {
 }
 
 func(s * S_DetermineWinner) EnterState(e Event) {
+	println ("->Determine Winner")
 	// broadcast winner.
 }
 func(s * S_DetermineWinner) HandleEvent(e Event) State {

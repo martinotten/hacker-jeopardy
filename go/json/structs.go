@@ -7,7 +7,7 @@ import (
 
 type Category struct {
 	Name    string `json:"name"`
-	Answers []Answer `json:"answers"`
+	Answers []*Answer `json:"answers"`
 }
 
 type Answer struct {
@@ -20,10 +20,10 @@ type Answer struct {
 func (c * Category) Done() bool {
 	for _, ans := range c.Answers {
 		if !ans.Done {
-			return true
+			return false
 		}
 	}
-	return false
+	return true
 }
 
 
