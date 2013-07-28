@@ -14,13 +14,13 @@ function renderPlayers(players) {
 function renderCategories(categories) {
   var mainElement = $("div#main");
   var template = Handlebars.compile($("#template-categories").html());
-  mainElement.html(this.template({categories: categories}));
+  mainElement.html(template({categories: categories}));
 }
 
 function renderAnswer(answer) {
   var mainElement = $("div#main");
   var template = Handlebars.compile($("#template-answer").html());
-  mainElement.html(this.template({answer: answer}));
+  mainElement.html(template({answer: answer}));
 }
 
 $(document).ready(function() {
