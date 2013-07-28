@@ -23,7 +23,6 @@ func (ws * WebsocketHandler)SetSocket (con *websocket.Conn) {
 }
 
 func (ws * WebsocketHandler) SendGameState(state *json.GameState) {
-	println(ws.conn)	
 	if err := ws.encoder.Encode(state); err != nil {
 		fmt.Printf("%s\n", err)
 		panic(err.Error())

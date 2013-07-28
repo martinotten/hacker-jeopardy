@@ -151,8 +151,10 @@ type S_NewGame struct {
 	baseState
 }
 func (s * S_NewGame) EnterState(e Event) {
+	println("New Game")
 	s.game.SendGameState()
 	// send (something) to buzzer
+	s.game.Admin.GetPlayer1(s.game)
 }
 func (s * S_NewGame) HandleEvent(e Event)State {
 	if (e.Id == E_PLAYER_ONE) {
@@ -169,11 +171,14 @@ type S_Player struct {
 	baseState
 }
 func (s * S_Player) EnterState(e Event) {
+	println("Choose Player")
 	switch (e.Id) {
 		case E_PLAYER_ONE:
 			s.game.Players[0] = &json.Player{e.Data, 0, "default"}
+			s.game.Admin.GetPlayer2(s.game)
 		case E_PLAYER_TWO:
 			s.game.Players[1] = &json.Player{e.Data, 0, "default"}
+			s.game.Admin.GetPlayer3(s.game)
 		case E_PLAYER_THREE:
 			s.game.Players[2] = &json.Player{e.Data, 0, "default"}
 		default:
@@ -203,6 +208,7 @@ type S_StartGame struct {
 }
 
 func (s * S_StartGame) EnterState(e Event) {
+	println("Start Game")
 	// set up board. broadcast
 	s.game.SendGameState()
 	s.game.HandleEvent(e) // advance to next state automatically.
@@ -217,6 +223,7 @@ type S_PickPlayer struct {
 	baseState
 }
 func (s * S_PickPlayer) EnterState(e Event) {
+	println("PickPlayer")
 	// reset some state
 	s.game.CurrentAttempts = ""
 	// pick player and broadcast
@@ -227,6 +234,8 @@ func (s * S_PickPlayer) EnterState(e Event) {
 	}
 	s.game.Players[s.game.CurrentPlayer -1].Status = "active"
 	s.game.SendGameState()
+
+	s.game.Admin.ChooseCategory(s.game)
 }
 func (s * S_PickPlayer) HandleEvent(e Event)State {
 	if (e.Id == E_QUESTION_CHOSEN) {
