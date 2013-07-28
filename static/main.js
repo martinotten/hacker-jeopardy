@@ -8,7 +8,7 @@ function renderPlayers(players) {
   players = addPositiveScores(players);
   var playersElement = $("div#players");
   var template = Handlebars.compile($("#template-players").html());
-  $("div#main").html(template({players: players}));
+  $("div#players").html(template({players: players}));
 }
 
 function renderCategories(categories) {
