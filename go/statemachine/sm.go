@@ -94,7 +94,8 @@ func NewGame(fn string, admin *comms.Admin)*Game {
 	game.Players[2] = &json.Player{"3", 0, "default"}
 
 	game.GameState = new(S_Idle)
-
+	game.GameState.game = game
+	game.GameState.EnterState(Event{});
 	return game
 }
 
@@ -132,7 +133,10 @@ type S_Idle struct {
 	baseState
 }
 
-func (s * S_Idle) EnterState(e Event) {return}
+func (s * S_Idle) EnterState(e Event) {
+	s.game.Admin.Prompt("Hello!")
+	return
+}
 func (s * S_Idle) HandleEvent(e Event)State {
 	if (e.Id == E_START_GAME) {
 		var snew S_NewGame

@@ -1,5 +1,5 @@
 function renderPlayers(players) {
-  var addPositiveScores(players) {
+  function addPositiveScores(players) {
     return players.map(function(player) {
       player['positive_score'] = player['score'] >= 0;
       return player;

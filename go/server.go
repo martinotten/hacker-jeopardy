@@ -9,11 +9,13 @@ import (
 
 import (
 	"jeopardy/comms"
+	"jeopardy/statemachine"
 )
 
 import "code.google.com/p/go.net/websocket"
 
 const assetDir    = "./static"
+const q_fn        = "./questions/questions.json"
 
 
 type LogHandler struct {
@@ -63,10 +65,15 @@ var ws comms.WebsocketHandler
 func WSHandle(con *websocket.Conn) {
 	ws = comms.WebsocketHandler{}
 	ws.SetSocket(con)
+	game.Admin.Prompt("Websocket connected")
 }
 
+var game *statemachine.Game
+
 func main (){
-		http.Handle("/", MakeLogging(http.FileServer(http.Dir(assetDir))))
-		http.Handle("/ws/", websocket.Handler(WSHandle))
-		http.ListenAndServe(":9090", nil)
+	admin := comms.Admin{} 
+	game  = statemachine.NewGame(q_fn, &admin) 
+	http.Handle("/", MakeLogging(http.FileServer(http.Dir(assetDir))))
+	http.Handle("/ws/", websocket.Handler(WSHandle))
+	http.ListenAndServe(":9090", nil)
 }
