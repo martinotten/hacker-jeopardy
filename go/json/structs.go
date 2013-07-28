@@ -17,6 +17,15 @@ type Answer struct {
 	Done bool`json:"done"`
 }
 
+func (c * Category) Done() bool {
+	for _, ans := range c.Answers {
+		if !ans.Done {
+			return true
+		}
+	}
+	return false
+}
+
 
 type Player struct {
 	Name string `json:"name"`

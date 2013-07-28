@@ -194,6 +194,7 @@ func (s * S_Player) HandleEvent(e Event)(state State) {
 			snew.game = s.game
 			return &snew
 		case E_PLAYER_THREE:
+			s.game.Players[2] = &json.Player{e.Data, 0, "default"}
 			// new game will start. broadcast board.
 			snew := S_StartGame{}
 			snew.game = s.game

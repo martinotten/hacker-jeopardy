@@ -55,4 +55,25 @@ func (a * Admin) GetPlayer3 (game * Game) {
 	}()
 }
 
-func (a * Admin) ChooseCategory(game * Game) {}
+func (a * Admin) ChooseCategory(game * Game) {
+	go func() {
+		for i, cat := range game.Categories {
+			if (!cat.Done()) {
+				fmt.Println("%d %s", i, cat.Name)
+			}
+		}
+
+		var i int
+		fmt.Scanln(&i)
+		for j, ans := range game.Categories[i].Answers {
+			if (!ans.Done) {
+				fmt.Println("%d %s", j, ans.Answer)
+			}
+		}
+		var j int
+		fmt.Scanln(&j)
+
+		event := Event{E_QUESTION_CHOSEN, fmt.Sprintf("%d_%d")}
+		game.HandleEvent(event)
+	}()
+}
